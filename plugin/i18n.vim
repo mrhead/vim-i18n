@@ -63,11 +63,7 @@ endfunction
 function! s:askForI18nKey()
   call inputsave()
   let key = ""
-  if exists('g:I18nKey')
-    let key = g:I18nKey
-  endif
   let key = input('I18n key: ', key)
-  let g:I18nKey = key
   call inputrestore()
   return key
 endfunction
