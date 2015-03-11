@@ -10,7 +10,8 @@ function! I18nTranslateString()
   normal gv"xy
   let text = s:removeQuotes(s:strip(@x))
   let variables = s:findInterpolatedVariables(text)
-  let key = s:askForI18nKey()
+  let proposedKey = s:proposeKey(text)
+  let key = s:askForI18nKey(proposedKey)
   if &filetype == 'eruby'
     let fullKey = s:determineFullKey(key)
     if IsSyntaxRuby() != -1
@@ -25,6 +26,14 @@ function! I18nTranslateString()
   endif
   " replace selection
   normal gv"xp
+endfunction
+
+function! s:proposeKey(text)
+  let key = tolower(a:text)
+  let key = '.' . key
+  let key = substitute(key, ' ', '_', 'g')
+
+  return key
 endfunction
 
 function! s:removeQuotes(text)
@@ -60,10 +69,9 @@ function! s:generateI18nArguments(variables)
   return join(arguments, ", ")
 endfunction
 
-function! s:askForI18nKey()
+function! s:askForI18nKey(proposed_key)
   call inputsave()
-  let key = ""
-  let key = input('I18n key: ', key)
+  let key = input('I18n key: ', a:proposed_key)
   call inputrestore()
   return key
 endfunction
